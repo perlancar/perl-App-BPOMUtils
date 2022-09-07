@@ -1,3 +1,9 @@
+0.005   2022-09-07  Released-By: PERLANCAR; Urgency: medium
+
+        - [ux] Allow CLI bpom-show-nutrition-facts (bpom-tampilkan-ing) to
+          read configuration file & env.
+
+
 0.004   2022-09-07  Released-By: PERLANCAR; Urgency: medium
 
         - Add CLI: bpom-show-nutrition-facts (and Indonesian alias
