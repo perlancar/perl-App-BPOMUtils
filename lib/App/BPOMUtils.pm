@@ -447,7 +447,7 @@ our $data_idn_bpom_jenis_pangan = [
 # END FRAGMENT id=data-idn_bpom_jenis_pangan
 
 my $res = gen_read_table_func(
-    name => 'bpom_list_jenis_pangan',
+    name => 'bpom_list_food_types',
     summary => 'List food types in BPOM processed food division',
     table_data => $data_idn_bpom_jenis_pangan,
     table_spec => {
