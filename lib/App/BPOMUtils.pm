@@ -582,7 +582,7 @@ _
 );
 die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
 
-sub nearest {
+sub _nearest {
     require Math::Round;
     Math::Round::nearest(@_);
 }
@@ -620,8 +620,8 @@ sub bpom_show_nutrition_facts {
         my $code_round_energy = sub {
             my $val = shift;
             if ($val < 5)      { 0 }
-            elsif ($val <= 50) { nearest( 5, $val) }
-            else               { nearest(10, $val) }
+            elsif ($val <= 50) { _nearest( 5, $val) }
+            else               { _nearest(10, $val) }
         };
 
         my $val0 = $args{fat} * 9 + $args{protein} * 4 + $args{carbohydrate} * 4;
@@ -634,7 +634,7 @@ sub bpom_show_nutrition_facts {
             val_per_srv   => $val,
             val_per_srv_R => $valr,
             pct_dv        => $val/2150*100,
-            pct_dv_R      => nearest(1, $val/2150*100),
+            pct_dv_R      => _nearest(1, $val/2150*100),
         };
 
       ENERGY_FROM_FAT: {
@@ -668,13 +668,13 @@ sub bpom_show_nutrition_facts {
         my $code_round_fat = sub {
             my $val = shift;
             if ($val < 0.5)    { 0 }
-            elsif ($val <= 5)  { sprintf("%.1f", nearest(0.5, $val)) }
-            else               { nearest(1  , $val) }
+            elsif ($val <= 5)  { sprintf("%.1f", _nearest(0.5, $val)) }
+            else               { _nearest(1  , $val) }
         };
         my $code_round_fat_pct_dv = sub {
             my ($val, $fat_valr) = @_;
             if ($fat_valr == 0) { 0 }
-            else                { nearest(1  , $val) }
+            else                { _nearest(1  , $val) }
         };
 
         my $val0 = $args{fat};
@@ -710,12 +710,12 @@ sub bpom_show_nutrition_facts {
         my $code_round_protein = sub {
             my $val = shift;
             if ($val < 0.5)    { 0 }
-            else               { nearest(1  , $val) }
+            else               { _nearest(1  , $val) }
         };
         my $code_round_protein_pct_dv = sub {
             my ($val, $fat_valr) = @_;
             if ($fat_valr == 0) { 0 }
-            else                { nearest(1  , $val) }
+            else                { _nearest(1  , $val) }
         };
 
         my $val0 = $args{protein};
@@ -736,12 +736,12 @@ sub bpom_show_nutrition_facts {
         my $code_round_carbohydrate = sub {
             my $val = shift;
             if ($val < 0.5)    { 0 }
-            else               { nearest(1  , $val) }
+            else               { _nearest(1  , $val) }
         };
         my $code_round_carbohydrate_pct_dv = sub {
             my ($val, $fat_valr) = @_;
             if ($fat_valr == 0) { 0 }
-            else                { nearest(1  , $val) }
+            else                { _nearest(1  , $val) }
         };
 
         my $val0 = $args{carbohydrate};
@@ -762,7 +762,7 @@ sub bpom_show_nutrition_facts {
         my $code_round_sugar = sub {
             my $val = shift;
             if ($val < 0.5)    { 0 }
-            else               { nearest(1  , $val) }
+            else               { _nearest(1  , $val) }
         };
 
         my $val0 = $args{sugar};
@@ -781,13 +781,13 @@ sub bpom_show_nutrition_facts {
         my $code_round_sodium = sub {
             my $val = shift;
             if ($val < 5)       { 0 }
-            elsif ($val <= 140) { nearest( 5, $val) }
-            else                { nearest(10, $val) }
+            elsif ($val <= 140) { _nearest( 5, $val) }
+            else                { _nearest(10, $val) }
         };
         my $code_round_sodium_pct_dv = sub {
             my ($val, $fat_valr) = @_;
             if ($fat_valr == 0) { 0 }
-            else                { nearest(1  , $val) }
+            else                { _nearest(1  , $val) }
         };
 
         my $val0 = $args{sodium};

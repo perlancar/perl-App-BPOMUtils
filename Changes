@@ -1,3 +1,9 @@
+0.004   2022-09-07  Released-By: PERLANCAR; Urgency: medium
+
+        - Add CLI: bpom-show-nutrition-facts (and Indonesian alias
+          bpom-tampilkan-ing).
+
+
 0.003   2022-09-07  Released-By: PERLANCAR; Urgency: medium
 
         - Add CLI bpom-list-reg-code-prefixes (and Indonesian alias:
