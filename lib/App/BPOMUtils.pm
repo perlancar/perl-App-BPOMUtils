@@ -582,6 +582,231 @@ _
 );
 die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
 
+sub nearest {
+    require Math::Round;
+    Math::Round::nearest(@_);
+}
+
+$SPEC{bpom_show_nutrition_facts} = {
+    v => 1.1,
+    summary => 'Round values and format them as nutrition fact table (ING - informasi nilai gizi)',
+    args => {
+        # XXX output_format: vertical table, horizontal table, simple table, csv. currently only simple table is supported
+
+        fat           => {summary => 'Total fat, in g/100g'           , schema => 'ufloat*', req=>1},
+        saturated_fat => {summary => 'Saturated fat, in g/100g'       , schema => 'ufloat*', req=>1},
+        protein       => {summary => 'Protein, in g/100g'             , schema => 'ufloat*', req=>1},
+        carbohydrate  => {summary => 'Total carbohydrate, in g/100g'  , schema => 'ufloat*', req=>1},
+        sugar         => {summary => 'Total sugar, in g/100g'         , schema => 'ufloat*', req=>1},
+        sodium        => {summary => 'Sodium, in mg/100g'             , schema => 'ufloat*', req=>1},
+
+        serving_size  => {summary => 'Serving size, in g'             , schema => 'ufloat*', req=>1},
+    },
+
+    examples => [
+        {
+            summary => 'An example',
+            args => {fat=>0.223, saturated_fat=>0.010, protein=>0.990, carbohydrate=>13.113, sugar=>7.173, sodium=>0.223, serving_size=>75},
+            test => 0,
+        }
+    ],
+};
+sub bpom_show_nutrition_facts {
+    my %args = @_;
+
+    my @rows;
+
+  ENERGY: {
+        my $code_round_energy = sub {
+            my $val = shift;
+            if ($val < 5)      { 0 }
+            elsif ($val <= 50) { nearest( 5, $val) }
+            else               { nearest(10, $val) }
+        };
+
+        my $val0 = $args{fat} * 9 + $args{protein} * 4 + $args{carbohydrate} * 4;
+        my $val  = $val0*$args{serving_size}/100;
+        my $valr = $code_round_energy->($val);
+        push @rows, {
+            name_eng => 'Total energy',
+            name_ind => 'Energi total',
+            val_per_100g  => $val0,
+            val_per_srv   => $val,
+            val_per_srv_R => $valr,
+            pct_dv        => $val/2150*100,
+            pct_dv_R      => nearest(1, $val/2150*100),
+        };
+
+      ENERGY_FROM_FAT: {
+            my $val0 = $args{fat} * 9;
+            my $val  = $val0*$args{serving_size}/100;
+            my $valr = $code_round_energy->($val);
+            push @rows, {
+                name_eng => 'Energy from fat',
+                name_ind => 'Energi dari lemak',
+                val_per_100g  => $val0,
+                val_per_srv   => $val,
+                val_per_srv_R => $valr,
+            };
+        }
+
+      ENERGY_FROM_SATURATED_FAT: {
+            my $val0 = $args{saturated_fat} * 9;
+            my $val  = $val0*$args{serving_size}/100;
+            my $valr = $code_round_energy->($val);
+            push @rows, {
+                name_eng => 'Energy from saturated fat',
+                name_ind => 'Energi dari lemak jenuh',
+                val_per_100g  => $val0,
+                val_per_srv   => $val,
+                val_per_srv_R => $valr,
+            };
+        }
+    } # ENERGY
+
+  FAT: {
+        my $code_round_fat = sub {
+            my $val = shift;
+            if ($val < 0.5)    { 0 }
+            elsif ($val <= 5)  { sprintf("%.1f", nearest(0.5, $val)) }
+            else               { nearest(1  , $val) }
+        };
+        my $code_round_fat_pct_dv = sub {
+            my ($val, $fat_valr) = @_;
+            if ($fat_valr == 0) { 0 }
+            else                { nearest(1  , $val) }
+        };
+
+        my $val0 = $args{fat};
+        my $val  = $val0*$args{serving_size}/100;
+        my $valr = $code_round_fat->($val);
+        push @rows, {
+            name_eng => 'Total fat',
+            name_ind => 'Lemak total',
+            val_per_100g  => $val0,
+            val_per_srv   => $val,
+            val_per_srv_R => $valr,
+            pct_dv   => $val/67*100,
+            pct_dv_R => $code_round_fat_pct_dv->($val/67*100, $valr),
+        };
+
+      SATURATED_FAT: {
+            my $val0 = $args{saturated_fat};
+            my $val  = $val0*$args{serving_size}/100;
+            my $valr = $code_round_fat->($val);
+            push @rows, {
+                name_eng => 'Saturated fat',
+                name_ind => 'Lemak jenuh',
+                val_per_100g  => $val0,
+                val_per_srv   => $val,
+                val_per_srv_R => $valr,
+                pct_dv   => $val/20*100,
+                pct_dv_R => $code_round_fat_pct_dv->($val/20*100, $valr),
+            };
+        }
+    } # FAT
+
+  PROTEIN: {
+        my $code_round_protein = sub {
+            my $val = shift;
+            if ($val < 0.5)    { 0 }
+            else               { nearest(1  , $val) }
+        };
+        my $code_round_protein_pct_dv = sub {
+            my ($val, $fat_valr) = @_;
+            if ($fat_valr == 0) { 0 }
+            else                { nearest(1  , $val) }
+        };
+
+        my $val0 = $args{protein};
+        my $val  = $val0*$args{serving_size}/100;
+        my $valr = $code_round_protein->($val);
+        push @rows, {
+            name_eng => 'Protein',
+            name_ind => 'Protein',
+            val_per_100g  => $val0,
+            val_per_srv   => $val,
+            val_per_srv_R => $valr,
+            pct_dv   => $val/60*100,
+            pct_dv_R => $code_round_protein_pct_dv->($val/60*100, $valr),
+        };
+    }
+
+  CARBOHYDRATE: {
+        my $code_round_carbohydrate = sub {
+            my $val = shift;
+            if ($val < 0.5)    { 0 }
+            else               { nearest(1  , $val) }
+        };
+        my $code_round_carbohydrate_pct_dv = sub {
+            my ($val, $fat_valr) = @_;
+            if ($fat_valr == 0) { 0 }
+            else                { nearest(1  , $val) }
+        };
+
+        my $val0 = $args{carbohydrate};
+        my $val  = $val0*$args{serving_size}/100;
+        my $valr = $code_round_carbohydrate->($val);
+        push @rows, {
+            name_eng => 'Total carbohydrate',
+            name_ind => 'Karbohidrat total',
+            val_per_100g  => $val0,
+            val_per_srv   => $val,
+            val_per_srv_R => $valr,
+            pct_dv   => $val/325*100,
+            pct_dv_R => $code_round_carbohydrate_pct_dv->($val/325*100, $valr),
+        };
+    }
+
+  SUGAR: {
+        my $code_round_sugar = sub {
+            my $val = shift;
+            if ($val < 0.5)    { 0 }
+            else               { nearest(1  , $val) }
+        };
+
+        my $val0 = $args{sugar};
+        my $val  = $val0*$args{serving_size}/100;
+        my $valr = $code_round_sugar->($val);
+        push @rows, {
+            name_eng => 'Total sugar',
+            name_ind => 'Gula total',
+            val_per_100g  => $val0,
+            val_per_srv   => $val,
+            val_per_srv_R => $valr,
+        };
+    }
+
+  SODIUM: {
+        my $code_round_sodium = sub {
+            my $val = shift;
+            if ($val < 5)       { 0 }
+            elsif ($val <= 140) { nearest( 5, $val) }
+            else                { nearest(10, $val) }
+        };
+        my $code_round_sodium_pct_dv = sub {
+            my ($val, $fat_valr) = @_;
+            if ($fat_valr == 0) { 0 }
+            else                { nearest(1  , $val) }
+        };
+
+        my $val0 = $args{sodium};
+        my $val  = $val0*$args{serving_size}/100;
+        my $valr = $code_round_sodium->($val);
+        push @rows, {
+            name_eng => 'Salt (Sodium)',
+            name_ind => 'Garam (Natrium)',
+            val_per_100g  => $val0,
+            val_per_srv   => $val,
+            val_per_srv_R => $valr,
+            pct_dv   => $val/325*100,
+            pct_dv_R => $code_round_sodium_pct_dv->($val/325*100, $valr),
+        };
+    }
+
+    [200, "OK", \@rows, {'table.fields'=>[qw/name_eng name_ind val_per_100g val_per_srv val_per_srv_R pct_dv pct_dv_R/]}];
+}
+
 1;
 #ABSTRACT:
 
