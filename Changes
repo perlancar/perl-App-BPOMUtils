@@ -1,3 +1,13 @@
+0.003   2022-09-07  Released-By: PERLANCAR; Urgency: medium
+
+        - Add CLI bpom-list-reg-code-prefixes (and Indonesian alias:
+          bpom-daftar-kode-prefiks-reg).
+
+        - [incompatible change] Rename CLI bpom-list-jenis-pangan to
+          bpom-list-food-types for language consistency. Add Indonesian alias
+          bpom-daftar-jenis-pangan.
+
+
 0.002   2021-08-28  Released-By: PERLANCAR; Urgency: low
 
 	- No functional changes.
