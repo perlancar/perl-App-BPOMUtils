@@ -600,7 +600,7 @@ $SPEC{bpom_show_nutrition_facts} = {
         protein       => {summary => 'Protein, in g/100g'             , schema => 'ufloat*', req=>1},
         carbohydrate  => {summary => 'Total carbohydrate, in g/100g'  , schema => 'ufloat*', req=>1},
         sugar         => {summary => 'Total sugar, in g/100g'         , schema => 'ufloat*', req=>1},
-        sodium        => {summary => 'Sodium, in mg/100g'             , schema => 'ufloat*', req=>1},
+        sodium        => {summary => 'Sodium, in mg/100g'             , schema => 'ufloat*', req=>1, cmdline_aliases=>{salt=>{}}},
 
         serving_size  => {summary => 'Serving size, in g'             , schema => 'ufloat*', req=>1},
     },
