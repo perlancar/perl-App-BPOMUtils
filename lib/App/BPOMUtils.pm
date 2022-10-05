@@ -591,6 +591,8 @@ $SPEC{bpom_show_nutrition_facts} = {
     v => 1.1,
     summary => 'Round values and format them as nutrition fact table (ING - informasi nilai gizi)',
     args => {
+        name => {schema=>'str*'},
+
         # XXX output_format: vertical table, horizontal table, simple table, csv. currently only simple table is supported
 
         fat           => {summary => 'Total fat, in g/100g'           , schema => 'ufloat*', req=>1},
