@@ -1,3 +1,17 @@
+0.006   2022-10-11  Released-By: PERLANCAR; Urgency: medium
+
+        - Make subs exportable.
+
+        [cli bpom-tampilkan-ing]
+
+        - Produce formatted ING (currently supported format:
+          vertical_table_{html,text}, linear_{html,text}).
+
+        - [ux] Add alias --salt for --sodium.
+
+        - Add optional option --name, currently for placeholder only.
+
+
 0.005   2022-09-07  Released-By: PERLANCAR; Urgency: medium
 
         - [ux] Allow CLI bpom-show-nutrition-facts (bpom-tampilkan-ing) to
