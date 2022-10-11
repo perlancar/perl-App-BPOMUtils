@@ -611,7 +611,7 @@ $SPEC{bpom_show_nutrition_facts} = {
             schema => ['str*', {in=>[qw/
                                            raw_table
                                            vertical_html_table vertical_text_table
-                                           inline_html inline_text
+                                           linear_html linear_text
                                        /]}],
             # horizontal_html_table horizontal_text_table formats not supported yet
             default => 'vertical_text_table',
@@ -672,8 +672,12 @@ sub bpom_show_nutrition_facts {
 
     if ($output_format =~ /vertical/) {
         push @rows, [{colspan=>5, align=>'middle', $attr => $code_fmttext->("*INFORMASI NILAI GIZI*")}];
-    } elsif ($output_format =~ /inline/) {
-        push @rows, $code_fmttext->("*INFORMASI NILAI GIZI*  ");
+    } elsif ($output_format =~ /linear/) {
+        if ($output_format =~ /html/) {
+            push @rows, "<big><b>INFORMASI NILAI GIZI</b></big>&nbsp;&nbsp; ";
+        } else {
+            push @rows, $code_fmttext->("*INFORMASI NILAI GIZI*  ");
+        }
     }
 
     if ($per_package_ing) {
@@ -687,7 +691,7 @@ sub bpom_show_nutrition_facts {
                       }];
             push @rows, [{colspan=>5, align=>'left', $attr => $code_fmttext->("*JUMLAH PER SAJIAN*")}];
             push @rows, [{colspan=>5, text=>''}];
-        } elsif ($output_format =~ /inline/) {
+        } elsif ($output_format =~ /linear/) {
             push @rows, $code_fmttext->("Takaran saji : " . _fmt_num_id($args{serving_size}) . " g, " .
                                         _fmt_num_id(_nearest(0.5, $args{package_size} / $args{serving_size}))." Sajian per kemasan  ");
         }
@@ -706,7 +710,7 @@ sub bpom_show_nutrition_facts {
             if ($output_format eq 'raw_table') {
             } elsif ($output_format =~ /vertical/) {
                 push @rows, [{colspan=>5, $attr=>$code_fmttext->("*JUMLAH PER KEMASAN ("._fmt_num_id($args{package_size})." g*)")}];
-            } elsif ($output_format =~ /inline/) {
+            } elsif ($output_format =~ /linear/) {
                 push @rows, $code_fmttext->("*JUMLAH PER KEMASAN ("._fmt_num_id($args{package_size})." g*) : ");
             }
         }
@@ -733,7 +737,7 @@ sub bpom_show_nutrition_facts {
             } else {
                 push @rows, [{colspan=>3, $attr=>$code_fmttext->("*Energi total*")}, {colspan=>2, align=>'right', $attr=>$code_fmttext->("*$valr kkal*")}];
             }
-        } elsif ($output_format =~ /inline/) {
+        } elsif ($output_format =~ /linear/) {
             if ($per_package_ing) {
                 push @rows, $code_fmttext->("*Energi total $valr kkal*, ");
             } else {
@@ -760,11 +764,8 @@ sub bpom_show_nutrition_facts {
                 } else {
                     push @rows, ['', {colspan=>2, $attr=>$code_fmttext->("Energi dari lemak")}, {colspan=>2, align=>'right', $attr=>$code_fmttext->("$valr kkal")}];
                 }
-            } elsif ($output_format =~ /inline/) {
-                if ($per_package_ing) {
-                } else {
-                    push @rows, $code_fmttext->("Energi dari lemak $valr kkal, ");
-                }
+            } elsif ($output_format =~ /linear/) {
+                push @rows, $code_fmttext->("Energi dari lemak $valr kkal, ");
             }
         }
 
@@ -787,11 +788,8 @@ sub bpom_show_nutrition_facts {
                 } else {
                     push @rows, [{bottom_border=>1, text=>''}, {colspan=>2, $attr=>$code_fmttext->("Energi dari lemak jenuh")}, {colspan=>2, align=>'right', $attr=>$code_fmttext->("$valr kkal")}];
                 }
-            } elsif ($output_format =~ /inline/) {
-                if ($per_package_ing) {
-                } else {
-                    push @rows, $code_fmttext->("Energi dari lemak jenuh $valr kkal, ");
-                }
+            } elsif ($output_format =~ /linear/) {
+                push @rows, $code_fmttext->("Energi dari lemak jenuh $valr kkal, ");
             }
         }
     } # ENERGY
@@ -799,7 +797,7 @@ sub bpom_show_nutrition_facts {
     if ($output_format eq 'raw_table') {
     } elsif ($output_format =~ /vertical/) {
         push @rows, [{colspan=>3, text=>''}, {colspan=>2, align=>'middle', $attr=>$code_fmttext->("*\% AKG**")}];
-    } elsif ($output_format =~ /inline/) {
+    } elsif ($output_format =~ /linear/) {
     }
 
   FAT: {
@@ -833,7 +831,7 @@ sub bpom_show_nutrition_facts {
             };
         } elsif ($output_format =~ /vertical/) {
             push @rows, [{colspan=>2, $attr=>$code_fmttext->("*Lemak total*")}, {align=>'right', $attr=>$code_fmttext->("*$valr g*")}, {align=>'right', $attr=>"$pct_dv_R %"}, ''];
-        } elsif ($output_format =~ /inline/) {
+        } elsif ($output_format =~ /linear/) {
             push @rows, $code_fmttext->("*Lemak total $valr g ($pct_dv_R% AKG)*, ");
         }
 
@@ -856,7 +854,7 @@ sub bpom_show_nutrition_facts {
                 };
             } elsif ($output_format =~ /vertical/) {
                 push @rows, [{colspan=>2, $attr=>$code_fmttext->("*Lemak jenuh*")}, {align=>'right', $attr=>$code_fmttext->("*$valr g*")}, {align=>'right', $attr=>"$pct_dv_R %"}, ''];
-            } elsif ($output_format =~ /inline/) {
+            } elsif ($output_format =~ /linear/) {
             push @rows, $code_fmttext->("*Lemak jenuh $valr g ($pct_dv_R% AKG)*, ");
             }
         }
@@ -892,7 +890,7 @@ sub bpom_show_nutrition_facts {
             };
         } elsif ($output_format =~ /vertical/) {
             push @rows, [{colspan=>2, $attr=>$code_fmttext->("*Protein*")}, {align=>'right', $attr=>$code_fmttext->("*$valr g*")}, {align=>'right', $attr=>"$pct_dv_R %"}, ''];
-        } elsif ($output_format =~ /inline/) {
+        } elsif ($output_format =~ /linear/) {
             push @rows, $code_fmttext->("*Protein $valr g ($pct_dv_R% AKG)*, ");
         }
     }
@@ -927,7 +925,7 @@ sub bpom_show_nutrition_facts {
             };
         } elsif ($output_format =~ /vertical/) {
             push @rows, [{colspan=>2, $attr=>$code_fmttext->("*Karbohidrat total*")}, {align=>'right', $attr=>$code_fmttext->("*$valr g*")}, {align=>'right', $attr=>"$pct_dv_R %"}, ''];
-        } elsif ($output_format =~ /inline/) {
+        } elsif ($output_format =~ /linear/) {
             push @rows, $code_fmttext->("*Karbohidrat total $valr g ($pct_dv_R% AKG)*, ");
         }
     }
@@ -954,7 +952,7 @@ sub bpom_show_nutrition_facts {
             };
         } elsif ($output_format =~ /vertical/) {
             push @rows, [{colspan=>2, $attr=>$code_fmttext->("*Gula*")}, {align=>'right', $attr=>$code_fmttext->("*$valr g*")}, '', ''];
-        } elsif ($output_format =~ /inline/) {
+        } elsif ($output_format =~ /linear/) {
             push @rows, $code_fmttext->("*Gula $valr g*, ");
         }
     }
@@ -990,7 +988,7 @@ sub bpom_show_nutrition_facts {
             };
         } elsif ($output_format =~ /vertical/) {
             push @rows, [{bottom_border=>1, colspan=>2, $attr=>$code_fmttext->("*Garam (Natrium)*")}, {align=>'right', $attr=>$code_fmttext->("*$valr mg*")}, {align=>'right', $attr=>"$pct_dv_R %"}, ''];
-        } elsif ($output_format =~ /inline/) {
+        } elsif ($output_format =~ /linear/) {
             push @rows, $code_fmttext->("*Garam (Natrium) $valr mg ($pct_dv_R% AKG)*. ");
         }
     }
@@ -998,7 +996,7 @@ sub bpom_show_nutrition_facts {
     if ($output_format eq 'raw_table') {
     } elsif ($output_format =~ /vertical/) {
         push @rows, [{colspan=>5, $attr=>$code_fmttext->("/*Persen AKG berdasarkan kebutuhan energi 2150 kkal. Kebutuhan energi Anda mungkin lebih tinggi atau lebih rendah./")}];
-    } elsif ($output_format =~ /inline/) {
+    } elsif ($output_format =~ /linear/) {
         push @rows, $code_fmttext->(                      "/Persen AKG berdasarkan kebutuhan energi 2150 kkal. Kebutuhan energi Anda mungkin lebih tinggi atau lebih rendah./");
     }
 
@@ -1013,7 +1011,7 @@ sub bpom_show_nutrition_facts {
         if ($output_format =~ /html/) {
             require Text::Table::HTML;
             my $table = Text::Table::HTML::table(rows => \@rows, header_row=>0);
-            $table =~ s!<table>!<table><colgroup><col style="width:16pt;"><col style="width:200pt;"><col style="width:48pt;"><col style="width:30pt;"><col style="width:20pt;"></colgroup>!;
+            $table =~ s!<table>!<table><colgroup><col style="width:16pt;"><col style="width:200pt;"><col style="width:48pt;"><col style="width:48pt;"><col style="width:36pt;"></colgroup>!;
             $text = "
 <style>
   table { border-collapse: collapse; border: 1px solid; }
@@ -1024,7 +1022,7 @@ sub bpom_show_nutrition_facts {
             require Text::Table::More;
             $text = Text::Table::More::generate_table(rows => \@rows, color=>1, header_row=>0);
         }
-    } elsif ($output_format =~ /inline/) {
+    } elsif ($output_format =~ /linear/) {
         $text = join("", @rows). "\n";
     }
 
