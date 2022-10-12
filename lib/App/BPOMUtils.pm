@@ -618,11 +618,19 @@ $SPEC{bpom_show_nutrition_facts} = {
             cmdline_aliases => {
                 f=>{},
             },
+            tags => ['category:output'],
         },
 
         browser => {
             summary => 'View output HTML in browser instead of returning it',
             schema => 'true*',
+            tags => ['category:output'],
+        },
+
+        color => {
+            schema => ['str*', in=>[qw/always auto never/]],
+            default => 'auto',
+            tags => ['category:output'],
         },
 
         fat           => {summary => 'Total fat, in g/100g'           , schema => 'ufloat*', req=>1},
@@ -638,17 +646,32 @@ $SPEC{bpom_show_nutrition_facts} = {
 
     examples => [
         {
-            summary => 'An example',
-            args => {fat=>0.223, saturated_fat=>0.010, protein=>0.990, carbohydrate=>13.113, sugar=>7.173, sodium=>0.223, serving_size=>75, package_size=>160},
+            summary => 'An example, in linear text format (color/emphasis is shown with markup)',
+            args => {fat=>0.223, saturated_fat=>0.010, protein=>0.990, carbohydrate=>13.113, sugar=>7.173, sodium=>0.223, serving_size=>175, package_size=>20, output_format=>"linear_text", color=>"never"},
             test => 0,
-        }
+        },
+        {
+            summary => 'The same example in vetical HTML table format',
+            args => {fat=>0.223, saturated_fat=>0.010, protein=>0.990, carbohydrate=>13.113, sugar=>7.173, sodium=>0.223, serving_size=>175, package_size=>20, output_format=>"vertical_html_table"},
+            test => 0,
+        },
+        {
+            summary => 'The same example, in vertical text format (color/emphasis is shown with markup)',
+            args => {fat=>0.223, saturated_fat=>0.010, protein=>0.990, carbohydrate=>13.113, sugar=>7.173, sodium=>0.223, serving_size=>175, package_size=>20, output_format=>"vertical_text_table", color=>"never"},
+            test => 0,
+        },
     ],
 };
 sub bpom_show_nutrition_facts {
     my %args = @_;
     my $output_format = $args{output_format} // 'raw_table';
 
+    my $color = $args{color} // 'auto';
+    my $is_interactive = -t STDOUT; ## no critic: InputOutput::ProhibitInteractiveTest
+    my $use_color = $color eq 'never' ? 0 : $color eq 'always' ? 1 : $is_interactive;
+
     my @rows;
+
 
     my $attr = $output_format =~ /html/ ? "raw_html" : "text";
     my $code_fmttext = sub {
@@ -659,9 +682,16 @@ sub bpom_show_nutrition_facts {
             die "Can't convert Org to HTML: $res->[0] - $res->[1]" if $res->[0] != 200;
             $res->[2];
         } else {
-            require Org::To::ANSIText;
-            my $res = Org::To::ANSIText::org_to_ansi_text(source_str => $text);
-            die "Can't convert Org to ANSI text: $res->[0] - $res->[1]" if $res->[0] != 200;
+            my $res;
+            if ($use_color) {
+                require Org::To::ANSIText;
+                $res = Org::To::ANSIText::org_to_ansi_text(source_str => $text);
+                die "Can't convert Org to ANSI text: $res->[0] - $res->[1]" if $res->[0] != 200;
+            } else {
+                require Org::To::Text;
+                $res = Org::To::Text::org_to_text(source_str => $text);
+                die "Can't convert Org to text: $res->[0] - $res->[1]" if $res->[0] != 200;
+            }
             $res->[2];
         }
     };
