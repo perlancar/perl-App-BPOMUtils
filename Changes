@@ -1,3 +1,10 @@
+0.009   2022-10-27  Released-By: PERLANCAR; Urgency: medium
+
+        - Update fixed table data & updated metadata.
+
+        - [ux] [cli bpom-list-food-categories] Add examples.
+
+
 0.008   2022-10-27  Released-By: PERLANCAR; Urgency: medium
 
         - Add utility: bpom-list-food-categories; move data to
