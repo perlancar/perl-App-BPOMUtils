@@ -1,3 +1,9 @@
+0.008   2022-10-27  Released-By: PERLANCAR; Urgency: medium
+
+        - Add utility: bpom-list-food-categories; move data to
+          App::BPOMUtils::Table.
+
+
 0.007   2022-10-12  Released-By: PERLANCAR; Urgency: medium
 
         [cli bpom-tampilkan-ing]
