@@ -17,6 +17,7 @@ use Perinci::Sub::Gen::AccessTable qw(gen_read_table_func);
 our @EXPORT_OK = qw(
                        bpom_list_food_categories
                        bpom_list_food_types
+                       bpom_list_food_ingredients
                        bpom_list_reg_code_prefixes
                        bpom_show_nutrition_facts
                );
@@ -97,6 +98,19 @@ _
 );
 die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
 
+$res = gen_read_table_func(
+    name => 'bpom_list_food_ingredients',
+    summary => 'List ingredients in BPOM processed food division',
+    table_data => $App::BPOMUtils::Table::data_idn_bpom_bahan_baku_pangan,
+    table_spec => $App::BPOMUtils::Table::meta_idn_bpom_bahan_baku_pangan,
+    description => <<'_',
+_
+    extra_props => {
+        examples => [
+        ],
+    },
+);
+die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
 sub _nearest {
     require Math::Round;
     Math::Round::nearest(@_);
