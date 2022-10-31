@@ -17,8 +17,11 @@ use Perinci::Sub::Gen::AccessTable qw(gen_read_table_func);
 our @EXPORT_OK = qw(
                        bpom_list_food_categories
                        bpom_list_food_types
+                       bpom_list_food_additives
                        bpom_list_food_ingredients
                        bpom_list_reg_code_prefixes
+                       bpom_list_microbe_inputs
+                       bpom_list_inputs
                        bpom_show_nutrition_facts
                );
 
@@ -111,6 +114,49 @@ _
     },
 );
 die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
+
+$res = gen_read_table_func(
+    name => 'bpom_list_food_additives',
+    summary => 'List additives in BPOM processed food division',
+    table_data => $App::BPOMUtils::Table::data_idn_bpom_bahan_tambahan_pangan,
+    table_spec => $App::BPOMUtils::Table::meta_idn_bpom_bahan_tambahan_pangan,
+    description => <<'_',
+_
+    extra_props => {
+        examples => [
+        ],
+    },
+);
+die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
+
+$res = gen_read_table_func(
+    name => 'bpom_list_food_microbe_inputs',
+    summary => 'List of microbe specification in BPOM processed food division',
+    table_data => $App::BPOMUtils::Table::data_idn_bpom_cemaran_mikroba_pangan,
+    table_spec => $App::BPOMUtils::Table::meta_idn_bpom_cemaran_mikroba_pangan,
+    description => <<'_',
+_
+    extra_props => {
+        examples => [
+        ],
+    },
+);
+die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
+
+$res = gen_read_table_func(
+    name => 'bpom_list_food_inputs',
+    summary => 'List of heavy metal/others specification in BPOM processed food division',
+    table_data => $App::BPOMUtils::Table::data_idn_bpom_cemaran_logam_pangan,
+    table_spec => $App::BPOMUtils::Table::meta_idn_bpom_cemaran_logam_pangan,
+    description => <<'_',
+_
+    extra_props => {
+        examples => [
+        ],
+    },
+);
+die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
+
 sub _nearest {
     require Math::Round;
     Math::Round::nearest(@_);
