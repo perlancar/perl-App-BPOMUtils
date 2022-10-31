@@ -1,3 +1,9 @@
+0.011   2022-10-31  Released-By: PERLANCAR; Urgency: medium
+
+        - Add CLIs: bpom-list-food-additives, bpom-list-food-inputs,
+          bpom-list-food-microbe-inputs.
+
+
 0.010   2022-10-31  Released-By: PERLANCAR; Urgency: medium
 
         - Add CLI: bpom-list-food-ingredients.
