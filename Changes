@@ -1,3 +1,10 @@
+0.012   2022-11-01  Released-By: PERLANCAR; Urgency: medium
+
+        - Tweak Abstract and rename alias CLI
+          bpom-daftar-cemaran-logam-pangan ->
+          bpom-daftar-karakteristik-dasar-dan-cemaran-logam-pangan.
+
+
 0.011   2022-10-31  Released-By: PERLANCAR; Urgency: medium
 
         - Add CLIs: bpom-list-food-additives, bpom-list-food-inputs,
