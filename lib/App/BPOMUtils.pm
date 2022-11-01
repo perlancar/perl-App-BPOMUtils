@@ -145,9 +145,9 @@ die "Can't generate function: $res->[0] - $res->[1]" unless $res->[0] == 200;
 
 $res = gen_read_table_func(
     name => 'bpom_list_food_inputs',
-    summary => 'List of heavy metal/others specification in BPOM processed food division',
-    table_data => $App::BPOMUtils::Table::data_idn_bpom_cemaran_logam_pangan,
-    table_spec => $App::BPOMUtils::Table::meta_idn_bpom_cemaran_logam_pangan,
+    summary => 'List of basic characteristic and heavy metal pollutant references in BPOM processed food division',
+    table_data => $App::BPOMUtils::Table::data_idn_bpom_karakteristik_dasar_dan_cemaran_logam_pangan,
+    table_spec => $App::BPOMUtils::Table::meta_idn_bpom_karakteristik_dasar_dan_cemaran_logam_pangan,
     description => <<'_',
 _
     extra_props => {
