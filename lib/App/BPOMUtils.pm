@@ -139,7 +139,7 @@ _
             {
                 summary => 'Check for additives that match some regular expressions',
                 src_plang => 'bash',
-                src => '[[prog]] -l --format text-pretty -- /potassium/ /citrate|phosphate/',
+                src => q{[[prog]] -l --format text-pretty -- /potassium/ '/citrate|phosphate/'},
                 test => 0,
             },
         ],
