@@ -124,6 +124,24 @@ $res = gen_read_table_func(
 _
     extra_props => {
         examples => [
+            {
+                summary => 'Check for additives that contain "dextrin" but do not contain "gamma"',
+                src_plang => 'bash',
+                src => '[[prog]] -l --format text-pretty -- dextrin -gamma',
+                test => 0,
+            },
+            {
+                summary => 'Check for additives that contain "magnesium" or "titanium"',
+                src_plang => 'bash',
+                src => '[[prog]] -l --format text-pretty --or -- magnesium titanium',
+                test => 0,
+            },
+            {
+                summary => 'Check for additives that match some regular expressions',
+                src_plang => 'bash',
+                src => '[[prog]] -l --format text-pretty -- /potassium/ /citrate|phosphate/',
+                test => 0,
+            },
         ],
     },
 );
