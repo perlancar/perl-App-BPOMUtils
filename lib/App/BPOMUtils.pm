@@ -639,7 +639,15 @@ sub bpom_show_nutrition_facts {
             $text = Text::Table::More::generate_table(rows => \@rows, color=>1, header_row=>0);
         }
     } elsif ($output_format =~ /linear/) {
-        $text = join("", @rows). "\n";
+        if ($output_format =~ /html/) {
+            $text = "
+<style>
+  p { border-style: solid; }
+</style>
+<p>" . join("", @rows). "</p>\n";
+        } else {
+            $text = join("", @rows). "\n";
+        }
     }
 
     if ($output_format =~ /html/ && $args{browser}) {
